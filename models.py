@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, String, create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy import Column, Integer, String, create_engine, ForeignKey
+from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 
 engine = create_engine("sqlite:///bible_app.db", echo=True)
 Session = sessionmaker(bind=engine)
@@ -13,6 +13,8 @@ class User(Base):
     id = Column(Integer(), primary_key=True)
     username = Column(String())
     email = Column(String(), unique=True ,nullable=False)
+
+    notes = relationship('Note', backref='user')
 
     def __repr__(self):
         username = self.username
@@ -35,7 +37,12 @@ class Note(Base):
     id = Column(Integer(), primary_key=True)
     title = Column(String())
     reference = Column(String())
+    
+    user_id = Column(Integer(), ForeignKey('users.id'))
+
 
     def __repr__(self):
         note = self.title
         return note
+    
+Base.metadata.create_all(engine)
