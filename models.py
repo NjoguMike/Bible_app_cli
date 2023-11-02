@@ -17,8 +17,7 @@ class User(Base):
     notes = relationship('Note', backref='user')
 
     def __repr__(self):
-        username = self.username
-        return username
+        return f"User (id = {self.id}, username = {self.username}, email = {self.email})"
     
 class Bible(Base):
     __tablename__ = 'bibles'
@@ -28,8 +27,7 @@ class Bible(Base):
     bible_version = Column(String())
 
     def __repr__(self):
-        bible = self.bible_name
-        return bible
+        return f"Bible (id = {self.id}, bible_name = {self.bible_name}, bible_version = {self.bible_version})"
 
 class Note(Base):
     __tablename__ = 'notes'
@@ -37,12 +35,11 @@ class Note(Base):
     id = Column(Integer(), primary_key=True)
     title = Column(String())
     reference = Column(String())
-    
+
     user_id = Column(Integer(), ForeignKey('users.id'))
 
 
     def __repr__(self):
-        note = self.title
-        return note
+        return f"Note (id = {self.id}, title = {self.title}, reference = {self.reference})"
     
 Base.metadata.create_all(engine)

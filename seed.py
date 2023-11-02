@@ -17,10 +17,17 @@ bible = Bible(
     bible_version = 'New Revised Standard Version'
 )
 
-note = Note(
-    title = "Alive in Christ",
-    reference = 'Ephesians'
-)
-
-session.bulk_save_objects([bible,note])
+session.add(bible)
 session.commit()
+
+user = session.query(User).filter([person.id for person in User.username])
+print()
+
+# note = Note(
+#     title = "Alive in Christ",
+#     reference = 'Ephesians',
+#     user_id = user.id
+# )
+
+# session.add(note)
+# session.commit()
