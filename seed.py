@@ -1,4 +1,9 @@
 from models import User, Note, session, Bible
+import json
+
+with open("KJV.json", mode="r") as bible:
+    kjv = json.load(bible)
+    print([book["abbrev"] for book in kjv])
 
 # session.query(User).delete()
 # session.query(Bible).delete()

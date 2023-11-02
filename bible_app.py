@@ -22,30 +22,42 @@ def app():
 
         if choice == 1:
             ans = input("Are you new? y/n :")
-            new_user = app_user(username = input("Your name please : "),
-                 email = input("Email : ")) if ans == "y" else print("signing you in ...")
-            print(new_user)
+            user = app_user(username = input("Your name please : "),
+                 email = input("Email : ")) if ans == "y" else input("Please enter your email to sign in :")
+
             if ans == 'y':
-                session.add(new_user)
+                session.add(user)
                 session.commit()
+            
+            else:
+                result = session.query(User).filter(User.email == user).first()
+                print(f"Welcome back ! {result.username}")
+
             choice = 3
             
         elif choice == 2:
             ans = input("Are you new? y/n :")
-            new_user = app_user(username = input("Your name please : "),
-                 email = input("Email : ")) if ans == "y" else print("signing you in ...")
+            user = app_user(username = input("Your name please : "),
+                 email = input("Email : ")) if ans == "y" else input("Please enter your email to sign in :")
             if ans == 'y':
-                session.add(new_user)
+                session.add(user)
                 session.commit()
                 print("Creating an account ...")
                 time.sleep(5)
                 new_note = note_pad(title = str(input("Please write the title of your note :")),
-                                     reference = input("What is your preferred Bible Version ? .i.e (LST, ESV, RSV, NRSV, NIV, KJV, NKJV )"))
+                                     reference = input("What is your preferred Bible Version ? .i.e (LST, ESV, RSV, NRSV, NIV, KJV, NKJV )"),
+                                     user_id = user.id)
+                session.add(new_note)
+                session.commit()
                                      
             else:
+                result = session.query(User).filter(User.email == user).first()
+                print(f"Welcome back ! {result.username}")
+
                 time.sleep(3)
                 new_note = note_pad(title = str(input("Please write the title of your note :")),
-                                     reference = input("What is your preferred Bible Version ? .i.e (LST, ESV, RSV, NRSV, NIV, KJV, NKJV )"))
+                                     reference = input("What is your preferred Bible Version ? .i.e (LST, ESV, RSV, NRSV, NIV, KJV, NKJV )"),
+                                     user_id = result.id)
                 # print(new_note)
                 session.add(new_note)
                 session.commit()
