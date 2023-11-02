@@ -14,7 +14,7 @@ class User(Base):
     username = Column(String())
     email = Column(String(), unique=True ,nullable=False)
 
-    notes = relationship('Note', back_populates='user')
+    notes = relationship('Note', backref='user')
 
     def __repr__(self):
         return f"User (id = {self.id}, username = {self.username}, email = {self.email})"
@@ -26,7 +26,7 @@ class Bible(Base):
     bible_name = Column(String())
     bible_version = Column(String())
 
-    notes = relationship('Note', back_populates='refs')
+    notes = relationship('Note', backref='refs')
 
     def __repr__(self):
         return f"Bible (id = {self.id}, bible_name = {self.bible_name}, bible_version = {self.bible_version})"
