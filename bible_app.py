@@ -3,6 +3,7 @@
 from models import User, Bible, Note, session
 # from seed import Interface
 import time
+# from seed import bible
 
 
 def app():
@@ -12,6 +13,7 @@ def app():
     note_pad = Note
     
     choice = 0 
+        
 
     while choice != 3:
         print(" *** Welcome to Bible App***")
@@ -32,6 +34,9 @@ def app():
             else:
                 result = session.query(User).filter(User.email == user).first()
                 print(f"Welcome back ! {result.username}")
+                Bible.chapters()
+                select_book = input("Please choose a book: ")
+                # content = 
 
             choice = 3
             
@@ -67,5 +72,6 @@ def app():
 
 
 if __name__ == '__main__':
-    app()
-    pass
+    # app()
+    Bible.read_book("Genesis",3,2)
+    
