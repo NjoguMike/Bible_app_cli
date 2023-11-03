@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, create_engine, ForeignKey
+from sqlalchemy import Column, Integer, String, create_engine, ForeignKey, Table, func, DateTime
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 from seed import bible
 
@@ -8,6 +8,14 @@ Session = sessionmaker(bind=engine)
 session = Session()
 Base = declarative_base()
 
+bible_user = Table(
+    'bible_users',
+    Base.metadata,
+    Column('user_id', ForeignKey('users.id')),
+    Column('bible_id', ForeignKey('bibles.id')),
+    extend_existing=True
+)
+
 class User(Base):
     __tablename__ = 'users'
 
@@ -15,7 +23,8 @@ class User(Base):
     username = Column(String())
     email = Column(String(), unique=True ,nullable=False)
 
-    notes = relationship('Note', backref='user')
+    notes = relationship('Note', back_populates='user')
+    bibles = relationship('Bible', secondary=bible_user, back_populates='users')
 
     def __repr__(self):
         return f"User (id = {self.id}, username = {self.username}, email = {self.email})"
@@ -27,25 +36,26 @@ class Bible(Base):
     bible_chapter = Column(String())
     bible_version = Column(String())
 
-    notes = relationship('Note', backref='refs')
+    notes = relationship('Note', back_populates='refs')
+    users = relationship('User', secondary=bible_user, back_populates='bibles')
 
     @classmethod
-    def chapters(cls):
-        chapter_list = [book["name"] for book in bible]
-        print(chapter_list)
+    def books(cls):
+        books_list = [book["name"] for book in bible]
+        print(books_list)
     
     @classmethod
-    def read_book(cls, book, chapter = 1, verse = 1):
+    def read_book(cls, book, chapter = 0, verse = 0):
         content = [select_book["chapters"] for select_book in bible if select_book["name"] == book]
         select_chapter = [selection[(chapter - 1)] for selection in content]
         select_verse = [selection[(chapter - 1)][(verse - 1)] for selection in content]
         # print(select_verse)
-        if chapter > 1 :
+        if chapter <= 0 :
+            print(content)
+        elif verse <= 0:
             print(select_chapter)
-        elif chapter > 1 and verse > 1 :
-            print(select_verse)
         else:
-            print(select_chapter)
+            print(select_verse)
 
     def __repr__(self):
         return f"Bible (id = {self.id}, bible_name = {self.bible_name}, bible_version = {self.bible_version})"
@@ -57,9 +67,13 @@ class Note(Base):
     title = Column(String())
     reference_chapter = Column(String())
     content = Column(String())
-
+    created_at = Column(DateTime(), server_default=func.now())
+    
     user_id = Column(Integer(), ForeignKey('users.id'))
     bible_id = Column(Integer(), ForeignKey('bibles.id'))
+
+    # user = relationship('User', back_populates='notes')
+    # refs = relationship('Bible', back_populates='notes')
 
 
     def __repr__(self):
