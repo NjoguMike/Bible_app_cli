@@ -58,7 +58,7 @@ class Bible(Base):
             print(select_verse)
 
     def __repr__(self):
-        return f"Bible (id = {self.id}, bible_name = {self.bible_name}, bible_version = {self.bible_version})"
+        return f"Bible (id = {self.id}, bible_name = {self.book}, bible_version = {self.version})"
 
 class Note(Base):
     __tablename__ = 'notes'
@@ -73,8 +73,8 @@ class Note(Base):
     user_id = Column(Integer(), ForeignKey('users.id'))
     bible_id = Column(Integer(), ForeignKey('bibles.id'))
 
-    # user = relationship('User', back_populates='notes')
-    # refs = relationship('Bible', back_populates='notes')
+    user = relationship('User', back_populates='notes')
+    refs = relationship('Bible', back_populates='notes')
 
 
     def __repr__(self):
