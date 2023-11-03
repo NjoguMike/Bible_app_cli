@@ -33,8 +33,8 @@ class Bible(Base):
     __tablename__ = 'bibles'
 
     id = Column(Integer(), primary_key=True)
-    bible_chapter = Column(String())
-    bible_version = Column(String())
+    book = Column(String())
+    version = Column(String())
 
     notes = relationship('Note', back_populates='refs')
     users = relationship('User', secondary=bible_user, back_populates='bibles')
@@ -67,8 +67,9 @@ class Note(Base):
     title = Column(String())
     reference_chapter = Column(String())
     content = Column(String())
+    bible_version = Column(String())
     created_at = Column(DateTime(), server_default=func.now())
-    
+
     user_id = Column(Integer(), ForeignKey('users.id'))
     bible_id = Column(Integer(), ForeignKey('bibles.id'))
 

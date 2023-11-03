@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
 
 from models import User, Bible, Note, session
-# from seed import Interface
-import time
-# from seed import bible
+import time, json
+from seed import bible_books, bible_version
 
+
+def add_Data():
+    for b in bible_books:
+        new_book = Bible(book = b, version = bible_version)
+        session.add(new_book)
+        session.commit()
 
 def app():
 
     # app_users = []
     app_user = User
     note_pad = Note
+    bible_ref = Bible
     
     choice = 0 
         
@@ -33,6 +39,7 @@ def app():
                 session.commit()
 
                 print(f"Welcome ! {user.username}")
+
                 Bible.books()
                 select_book = input("Please choose a book: ")
                 select_chapter = int(input("and chapter: "))
@@ -81,6 +88,7 @@ def app():
 
 
 if __name__ == '__main__':
-    app()
+    # app()
+    add_Data()
     # Bible.read_book("Genesis",2,2)
     
